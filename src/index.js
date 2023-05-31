@@ -1,17 +1,61 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Navigation from './components/Navigation';
+import Community from './pages/Community';
+import Home from './pages/Home';
+import Tutorial from './pages/Tutorial';
+import LocaleContext from './contexts/LocaleContext';
+
+import './styles/style.css';
+
+/**
+ * @todos
+ * 1. Buatlah fitur ubah bahasa dengan memanfaatkan Context.
+ * 2. Pastikan Anda menggunakan fitur Hooks dalam memanfaatkan Context.
+ *
+ * Catatan:
+ *  - Manfaatkan tombol yang berada di pojok kanan navigasi untuk mengubah bahasa.
+ *  - Seluruh konten yang ditampilkan diambil dari utils -> content.js
+ */
+
+function App() {
+  const [locale, setLocale] = React.useState('id');
+
+  const toggleLocale = () => {
+    setLocale((prevLocale) => {
+      return prevLocale === 'id' ? 'en' : 'id';
+    });
+  };
+
+  const localeContextValue = React.useMemo(() => {
+    return {
+      locale,
+      toggleLocale,
+    };
+  }, [locale]);
+
+  return (
+    <>
+      <LocaleContext.Provider value={localeContextValue}>
+        <header>
+          <Navigation />
+        </header>
+        <main>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/tutorial' element={<Tutorial />} />
+            <Route path='/community' element={<Community />} />
+          </Routes>
+        </main>
+      </LocaleContext.Provider>
+    </>
+  );
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  <BrowserRouter>
     <App />
-  </React.StrictMode>
+  </BrowserRouter>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
